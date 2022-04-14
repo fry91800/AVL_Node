@@ -41,6 +41,13 @@ class AVL_Node:
 			self.right = self.right.simpleRightRotation()
 		if self.right is not None and self.right.isSimplyRightUnbalanced():
 			self.right = self.right.simpleLeftRotation()
+
+	def balanceRoot(self):
+		if self.isSimplyLeftUnbalanced():	
+			return self.simpleRightRotation()
+		if self.isSimplyRightUnbalanced():	
+			return self.simpleLeftRotation()
+		return self
 	def isLeaf(self):
 		if self.left is None and self.right is None:
 			return True
@@ -49,12 +56,24 @@ class AVL_Node:
 	def getHeight(self):
 		if self.isLeaf():
 			return 0
+		leftHeight = 0
+		rightHeight = 0
+		if self.left is not None:
+			leftHeight = self.left.getHeight()
+		if self.right is not None:
+			rightHeight = self.right.getHeight()
+		return max(leftHeight,rightHeight) + 1
+		
+
+	def getOldHeight(self):
+		if self.isLeaf():
+			return 0
 		else:
 			if self.left is None:
 				return 1 + self.right.getHeight()
 			else:
 				return 1 + self.left.getHeight()
-		return max(self.left.getHeight(),self.right.getHeight())
+		return 1 + max(self.left.getHeight(),self.right.getHeight())
 
 	def insert(self, value):
 		#Go Left
@@ -112,7 +131,7 @@ class AVL_Node:
 		self.left.value = 8
 
 	def printTree(self, level=0):
-		print(level*" " + str(self.value))
+		print(level*" " + str(self.value) + "(" + str(self.computeBalance()) + ")")
 		if self.left != None:
 			self.left.printTree(level + 1)
 		if self.right != None:
@@ -131,6 +150,8 @@ arbre.printTree()
 while(True):
 	value = choose()
 	arbre.append(value)
+	arbre = arbre.balanceRoot()
+	arbre.balanceChildren()
 	arbre.printTree()
 #testArbre = testArbre.simpleRightRotation()
 #print(testArbre.value)
