@@ -118,14 +118,19 @@ class AVL_Node:
 		if self.right != None:
 			self.right.printTree(level + 1)
 
-testArbre = AVL_Node(10)
-testArbre.append(11)
-testArbre.append(12)
-testArbre.append(13)
-testArbre.append(14)
-testArbre.append(15)
-testArbre.append(16)
-testArbre.append(17)
-testArbre.printTree()
+def choose():
+	choice = input("type a number to add, q to quit")
+	if choice == "q":
+		exit()
+	else:
+		return int(choice)
+
+value = choose()
+arbre = AVL_Node(value)
+arbre.printTree()
+while(True):
+	value = choose()
+	arbre.append(value)
+	arbre.printTree()
 #testArbre = testArbre.simpleRightRotation()
 #print(testArbre.value)
