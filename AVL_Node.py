@@ -47,6 +47,10 @@ class AVL_Node:
 			return self.simpleRightRotation()
 		if self.isSimplyRightUnbalanced():	
 			return self.simpleLeftRotation()
+		if self.isDifferentlyLeftUnbalanced():	
+			return self.differentRightRotation()
+		if self.isDifferentlyRightUnbalanced():	
+			return self.differentLeftRotation()
 		return self
 	def isLeaf(self):
 		if self.left is None and self.right is None:
@@ -63,17 +67,6 @@ class AVL_Node:
 		if self.right is not None:
 			rightHeight = self.right.getHeight()
 		return max(leftHeight,rightHeight) + 1
-		
-
-	def getOldHeight(self):
-		if self.isLeaf():
-			return 0
-		else:
-			if self.left is None:
-				return 1 + self.right.getHeight()
-			else:
-				return 1 + self.left.getHeight()
-		return 1 + max(self.left.getHeight(),self.right.getHeight())
 
 	def insert(self, value):
 		#Go Left
@@ -110,8 +103,18 @@ class AVL_Node:
 			return True
 		return False
 
+	def isDifferentlyLeftUnbalanced(self):
+		if self.left is not None and self.computeBalance() == 2 and self.left.computeBalance() == -1:
+			return True
+		return False
+
 	def isSimplyRightUnbalanced(self):
 		if self.right is not None and self.computeBalance() == -2 and self.right.computeBalance() == -1:
+			return True
+		return False
+
+	def isDifferentlyRightUnbalanced(self):
+		if self.right is not None and self.computeBalance() == -2 and self.right.computeBalance() == 1:
 			return True
 		return False
 
@@ -125,6 +128,26 @@ class AVL_Node:
 		newRoot = self.left
 		self.left = self.left.right
 		newRoot.right = self
+		return newRoot
+
+	def differentRightRotation(self):
+		formerLeftRightRight = self.left.right.right
+		formerLeftRightLeft = self.left.right.left
+		newRoot = self.left.right
+		newRoot.right = self
+		newRoot.left = self.left
+		newRoot.right.left = formerLeftRightRight
+		newRoot.left.right = formerLeftRightLeft
+		return newRoot
+
+	def differentLeftRotation(self):
+		formerLeftRightRight = self.left.right.right
+		formerLeftRightLeft = self.left.right.left
+		newRoot = self.left.right
+		newRoot.right = self
+		newRoot.left = self.left
+		newRoot.right.left = formerLeftRightRight
+		newRoot.left.right = formerLeftRightLeft
 		return newRoot
 
 	def changeLeftChildren(self):
