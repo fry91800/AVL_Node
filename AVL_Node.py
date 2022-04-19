@@ -150,8 +150,43 @@ class AVL_Node:
 		newRoot.left.right = formerLeftRightLeft
 		return newRoot
 
-	def changeLeftChildren(self):
-		self.left.value = 8
+	def delete(self, value):
+		if self.isLeaf():
+			if self.value != value:
+				return self
+			else:
+				return None
+		else:
+		#Go left
+			if value < self.value:
+				if self.left is not None:
+					self.left.delete(value)
+				else:
+					return self
+		#Go Right
+			if value > self.value:
+				if self.right is not None:
+					self.right.delete(value)
+				else:
+					return self
+		#Delete
+			if value == self.value:
+				if self.right is None:
+					return self.left
+				if self.left is None:
+					return self.right
+				self.value = self.getSuccessor().value
+				return self
+
+	def getSuccessor(self):
+		child = self.right
+		while child.left is not None:
+			child = child.left
+		return child
+		
+		
+				
+			
 
 	def printTree(self, level=0):
 		print(level*" " + str(self.value) + "(" + str(self.computeBalance()) + ")")
@@ -161,20 +196,50 @@ class AVL_Node:
 			self.right.printTree(level + 1)
 
 def choose():
-	choice = input("type a number to add, q to quit")
+	choice = int(input("type a number, q to quit"))
 	if choice == "q":
 		exit()
 	else:
 		return int(choice)
 
+def menu():
+	choice = input("a to add, d to delete, q to quit")
+	if choice == "q":
+		exit()
+	else:
+		return choice
+
+
 value = choose()
 arbre = AVL_Node(value)
 arbre.printTree()
 while(True):
+	menuChoice = menu()
+	while menuChoice not in ["a","d"]:
+		menuChoice = menu()
+	if menuChoice == "a":
+		value = choose()
+		arbre.append(value)
+		arbre = arbre.balanceRoot()
+		arbre.balanceChildren()
+		arbre.printTree()
+	elif menuChoice == "d":
+		value = choose()
+		arbre.delete(value)
+		arbre = arbre.balanceRoot()
+		arbre.balanceChildren()
+		arbre.printTree()
+for i in range(1,10):
 	value = choose()
 	arbre.append(value)
 	arbre = arbre.balanceRoot()
 	arbre.balanceChildren()
 	arbre.printTree()
+choice = int(input("type a number to DELETE, q to quit"))
+arbre.delete(choice)
+arbre = arbre.balanceRoot()
+arbre.balanceChildren()
+arbre.printTree()
+quit()
 #testArbre = testArbre.simpleRightRotation()
 #print(testArbre.value)
