@@ -34,19 +34,19 @@ class AVL_Node:
 		if self.right is not None:
 			self.right.balanceChildren()
 		if self.left is not None and self.left.isSimplyLeftUnbalanced():
-			self.left = self.left.simpleRightRotation()
+			self.left = self.left.rot_right()
 		if self.left is not None and self.left.isSimplyRightUnbalanced():
-			self.left = self.left.simpleLeftRotation()
+			self.left = self.left.rot_left()
 		if self.right is not None and self.right.isSimplyLeftUnbalanced():
-			self.right = self.right.simpleRightRotation()
+			self.right = self.right.rot_right()
 		if self.right is not None and self.right.isSimplyRightUnbalanced():
-			self.right = self.right.simpleLeftRotation()
+			self.right = self.right.rot_left()
 
 	def balanceRoot(self):
 		if self.isSimplyLeftUnbalanced():	
-			return self.simpleRightRotation()
+			return self.rot_right()
 		if self.isSimplyRightUnbalanced():	
-			return self.simpleLeftRotation()
+			return self.rot_left()
 		if self.isDifferentlyLeftUnbalanced():	
 			return self.differentRightRotation()
 		if self.isDifferentlyRightUnbalanced():	
@@ -77,11 +77,11 @@ class AVL_Node:
 				self.left.insert(value)
 			self.balance += 1
 			if self.isSimplyLeftUnbalanced():
-				newArbre = self.simpleRightRotation()
+				newArbre = self.rot_right()
 			else:
 				newArbre = self
 			if self.left is not None and self.left.isSimplyLeftUnbalanced():
-				self.left = self.left.simpleRightRotation()
+				self.left = self.left.rot_right()
 			return newArbre
 		#Go Right
 		else:
@@ -91,11 +91,11 @@ class AVL_Node:
 				self.right.insert(value)
 			self.balance -= 1
 			if self.isSimplyRightUnbalanced():
-				newArbre = self.simpleLeftRotation()
+				newArbre = self.rot_left()
 			else:
 				newArbre = self
 			if self.right is not None and self.right.isSimplyLeftUnbalanced():
-				self.right = self.right.simpleRightRotation()
+				self.right = self.right.rot_right()
 			return newArbre
 
 	def isSimplyLeftUnbalanced(self):
@@ -118,36 +118,40 @@ class AVL_Node:
 			return True
 		return False
 
-	def simpleLeftRotation(self):
+	def rot_left(self):
 		newRoot = self.right
 		self.right = self.right.left
 		newRoot.left = self
 		return newRoot
 
-	def simpleRightRotation(self):
+	def rot_right(self):
 		newRoot = self.left
 		self.left = self.left.right
 		newRoot.right = self
 		return newRoot
 
 	def differentRightRotation(self):
-		formerLeftRightRight = self.left.right.right
-		formerLeftRightLeft = self.left.right.left
-		newRoot = self.left.right
-		newRoot.right = self
-		newRoot.left = self.left
-		newRoot.right.left = formerLeftRightRight
-		newRoot.left.right = formerLeftRightLeft
+		#formerLeftRightRight = self.left.right.right
+		#formerLeftRightLeft = self.left.right.left
+		#newRoot = self.left.right
+		#newRoot.right = self
+		#newRoot.left = self.left
+		#newRoot.right.left = formerLeftRightRight
+		#newRoot.left.right = formerLeftRightLeft
+		newRoot = self.rot_right()
+		newRoot = newRoot.rot_left()
 		return newRoot
 
 	def differentLeftRotation(self):
-		formerLeftRightRight = self.left.right.right
-		formerLeftRightLeft = self.left.right.left
-		newRoot = self.left.right
-		newRoot.right = self
-		newRoot.left = self.left
-		newRoot.right.left = formerLeftRightRight
-		newRoot.left.right = formerLeftRightLeft
+		#formerLeftRightRight = self.left.right.right
+		#formerLeftRightLeft = self.left.right.left
+		#newRoot = self.left.right
+		#newRoot.right = self
+		#newRoot.left = self.left
+		#newRoot.right.left = formerLeftRightRight
+		#newRoot.left.right = formerLeftRightLeft
+		newRoot = self.rot_left()
+		newRoot = newRoot.rot_right()
 		return newRoot
 
 	def delete(self, value):
@@ -241,5 +245,5 @@ arbre = arbre.balanceRoot()
 arbre.balanceChildren()
 arbre.printTree()
 quit()
-#testArbre = testArbre.simpleRightRotation()
+#testArbre = testArbre.rot_right()
 #print(testArbre.value)
